@@ -1,8 +1,30 @@
 import React, { useEffect, useState } from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
+import {useNavigate} from 'react-router-dom'
+import { fetchOrder } from 'store/orderSlice'
 
 const MyOrders = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const {orders} = useSelector((state)=>state.orders)
+    const [selectedItem,setSelectedItem] = useState('all')
+    
+    const [searchTerm,setSearchTerm] = useState('')
+    const [date,setDate] = useState('')
   
+    useEffect(()=>{
+        dispatch(fetchOrder())
+    },[])
+
+    // const filteredOrders = selectedItem === "all" ? orders : orders.filter((order)=>order.orderStatus === selectedItem)
+    const filteredOrders = orders?.filter((order)=>selectedItem === 'all' || order.orderStatus === selectedItem )
+    .filter((order)=>
+        order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.paymentDetails.method.toLowerCase().includes(searchTerm.toLowerCase()) 
+    )
+    .filter((order)=>date === "" || new Date(order.createdAt).toLocaleDateString() === new Date(date).toLocaleDateString())
+    
   return (
   
 <div className="antialiased font-sans bg-gray-200 pt-20">
@@ -16,7 +38,7 @@ const MyOrders = () => {
            
                     <div className="relative">
                         <select
-                        
+                        onChange={(e)=>setSelectedItem(e.target.value)}
                             className="appearance-none h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
                             <option value='all'>all</option>
                             <option value='pending'>pending</option>
@@ -42,16 +64,16 @@ const MyOrders = () => {
                         </svg>
                     </span>
                     <input placeholder="Search"
-                 
-                    
+                    value={searchTerm}
+                    onChange={(e)=>setSearchTerm(e.target.value)}
                         className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
                 </div>
                 <div className="block relative">
                 
                     <input placeholder="Search"
                     type='date'
-                    
-                   
+                    value={date}
+                    onChange={(e)=>setDate(e.target.value)}
                         className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
                 </div>
             </div>
@@ -84,8 +106,10 @@ const MyOrders = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        
-                                    <tr>
+                        {
+                           filteredOrders && filteredOrders.length > 0 && filteredOrders.map((order)=>{
+                                return (
+                                    <tr key={order._id}>
                                     {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0 w-10 h-10">
@@ -101,14 +125,14 @@ const MyOrders = () => {
                                         </div>
                                     </td> */}
                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p  className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >Id</p>
+                                        <p onClick={()=>navigate(`/myorders/${order._id}`)} className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{order._id}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">orderAmount</p>
+                                        <p className="text-gray-900 whitespace-no-wrap">{order.totalAmount}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">
-                                          PaymentGrade
+                                           {order.paymentDetails.status}({order.paymentDetails.method}) 
                                         </p>
                                     </td>
                                
@@ -117,14 +141,16 @@ const MyOrders = () => {
                                             className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
                                             <span aria-hidden
                                                 className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                                            <span className="relative">orderStatus</span>
+                                            <span className="relative">{order.orderStatus}</span>
                                         </span>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p className="text-gray-900 whitespace-no-wrap">{new Date().toLocaleDateString()}</p>
+                                        <p className="text-gray-900 whitespace-no-wrap">{new Date(order.createdAt).toLocaleDateString()}</p>
                                     </td>
                                 </tr>
-                       
+                                )
+                            })
+                        }
                 
                         </tbody>
                     </table>
