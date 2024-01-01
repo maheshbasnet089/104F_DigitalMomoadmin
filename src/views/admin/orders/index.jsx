@@ -1,7 +1,10 @@
+import axios from 'axios'
+import { APIAuthenticated } from 'http'
 import React, { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 import {useNavigate} from 'react-router-dom'
+import { deleteOrders } from 'store/orderSlice'
 import { fetchOrder } from 'store/orderSlice'
 
 const MyOrders = () => {
@@ -16,6 +19,10 @@ const MyOrders = () => {
     useEffect(()=>{
         dispatch(fetchOrder())
     },[])
+    const deleteOrder =  (orderId) =>{
+  
+        dispatch(deleteOrders(orderId))
+    }
 
     // const filteredOrders = selectedItem === "all" ? orders : orders.filter((order)=>order.orderStatus === selectedItem)
     const filteredOrders = orders?.filter((order)=>selectedItem === 'all' || order.orderStatus === selectedItem )
@@ -24,6 +31,8 @@ const MyOrders = () => {
         order.paymentDetails.method.toLowerCase().includes(searchTerm.toLowerCase()) 
     )
     .filter((order)=>date === "" || new Date(order.createdAt).toLocaleDateString() === new Date(date).toLocaleDateString())
+
+   
     
   return (
   
@@ -103,6 +112,10 @@ const MyOrders = () => {
                                     className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Ordered At
                                 </th>
+                                <th
+                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,7 +138,7 @@ const MyOrders = () => {
                                         </div>
                                     </td> */}
                                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p onClick={()=>navigate(`/myorders/${order._id}`)} className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{order._id}</p>
+                                        <p onClick={()=>navigate(`/admin/orders/${order._id}`)} className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{order._id}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{order.totalAmount}</p>
@@ -146,6 +159,9 @@ const MyOrders = () => {
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <button onClick={()=>deleteOrder(order._id)}  className="text-gray-900 whitespace-no-wrap bg-red-400 p-2">Delete</button>
                                     </td>
                                 </tr>
                                 )

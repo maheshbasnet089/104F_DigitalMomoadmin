@@ -16,6 +16,7 @@ import {
 import Orders from "views/admin/orders";
 import Users from "views/admin/users";
 import Products from "views/admin/products";
+import SingleOrder from "views/admin/orders/singleOrder";
 
 const routes = [
   {
@@ -46,6 +47,14 @@ const routes = [
     path: "products",
     icon: <MdPerson className="h-6 w-6" />,
     component: <Products />,
+  },
+  {
+    name: "Orders",
+    layout: "/admin",
+    path: "orders/:id",
+    icon: <MdOutlineShoppingCart className="h-6 w-6" />,
+    component: <SingleOrder />,
+    secondary: true,
   }
 ];
 export default routes;

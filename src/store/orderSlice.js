@@ -19,12 +19,24 @@ const orderSlice = createSlice({
        },
        setOrders(state,action){
         state.orders = action.payload
-       }
+       },
+       deleteOrderById(state,action){
+        // action.payload.productId
+        const index = state.orders.findIndex(order=>order._id === action.payload.orderId)
+        state.orders.splice(index,1)
+        },
+
+         updateOrderById(state,action){
+            const index = state.orders.findIndex(order=>order._id === action.payload.orderId)
+            if(index !== -1){
+                state.orders[index] = action.payload.data
+            }
+        },
 
     }
 })
 
-export const {setOrders,setStatus} = orderSlice.actions 
+export const {setOrders,setStatus,deleteOrderById,updateOrderById} = orderSlice.actions 
 
 export default orderSlice.reducer 
 
@@ -44,5 +56,40 @@ export function fetchOrder(){
         }
     }
 }
+
+export function deleteOrders(orderId){
+    return async function deleteOrdersThunk(dispatch){
+        dispatch(setStatus(STATUSES.LOADING))
+        try {
+          
+            const response = await APIAuthenticated.delete(`admin/orders/${orderId}`)
+            console.log(response,"Response")
+            dispatch(deleteOrderById({orderId}))
+            dispatch(setStatus(STATUSES.SUCCESS))
+        } catch (error) {
+            
+            dispatch(setStatus(STATUSES.ERROR))
+        }
+    }
+}
+
+export function updateOrderStatus(orderId,orderStatus){
+    return async function updateOrderStatusThunk(dispatch){
+        dispatch(setStatus(STATUSES.LOADING))
+        try {
+            
+            const response = await APIAuthenticated.patch(`admin/orders/${orderId}`,{orderStatus})
+            console.log(response,"Response")
+            dispatch(updateOrderById({orderId,data : response.data.data}))
+            
+            dispatch(setStatus(STATUSES.SUCCESS))
+        } catch (error) {
+            
+            dispatch(setStatus(STATUSES.ERROR))
+        }
+    }
+}
+
+
 
 

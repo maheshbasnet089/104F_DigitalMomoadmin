@@ -12,7 +12,7 @@ const Myusers = () => {
     
     const [searchTerm,setSearchTerm] = useState('')
     const [date,setDate] = useState('')
-    console.log(searchTerm)
+    
   
     useEffect(()=>{
         dispatch(fetchUser())
