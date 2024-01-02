@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux'
 
 import {useNavigate} from 'react-router-dom'
 
-import { fetchUser } from 'store/userSlice'
+import { fetchUser,deleteUser } from 'store/userSlice'
 
 const Myusers = () => {
     const dispatch = useDispatch()
@@ -12,7 +12,10 @@ const Myusers = () => {
     
     const [searchTerm,setSearchTerm] = useState('')
     const [date,setDate] = useState('')
-    
+    const deleteUserId =  (userId) =>{
+  
+        dispatch(deleteUser(userId))
+    }
   
     useEffect(()=>{
         dispatch(fetchUser())
@@ -84,6 +87,10 @@ const Myusers = () => {
                                     className="px-5 py-3 buser-b-2 buser-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Registered At
                                 </th>
+                                <th
+                                    className="px-5 py-3 buser-b-2 buser-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,6 +131,9 @@ const Myusers = () => {
                                     </td>
                                     <td className="px-5 py-5 buser-b buser-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{new Date(user.createdAt).toLocaleDateString()}</p>
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <button onClick={()=>deleteUserId(user._id)}  className="text-gray-900 whitespace-no-wrap bg-red-400 p-2">Delete</button>
                                     </td>
                                 </tr>
                                 )

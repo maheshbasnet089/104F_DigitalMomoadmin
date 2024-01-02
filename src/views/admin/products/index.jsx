@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 import {useNavigate} from 'react-router-dom'
+import { deleteProduct } from 'store/productsSlice'
 import { fetchProduct } from 'store/productsSlice'
 
 const Myproducts = () => {
@@ -15,7 +16,10 @@ const Myproducts = () => {
         dispatch(fetchProduct())
     },[])
 
-
+    const deleteProductId =  (productId) =>{
+  
+        dispatch(deleteProduct(productId))
+    }
 
     // const filteredproducts = selectedItem === "all" ? products : products.filter((product)=>product.productstatus === selectedItem)
     const filteredproducts = products?.filter((product)=>selectedItem === 'all' || product.productStatus === selectedItem ).filter((product)=>
@@ -101,6 +105,10 @@ const Myproducts = () => {
                                     className="px-5 py-3 bproduct-b-2 bproduct-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Created At
                                 </th>
+                                <th
+                                    className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -141,6 +149,9 @@ const Myproducts = () => {
                                     </td>
                                     <td className="px-5 py-5 bproduct-b bproduct-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{new Date(product.createdAt).toLocaleDateString()}</p>
+                                    </td>
+                                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <button onClick={()=>deleteProductId(product._id)}  className="text-gray-900 whitespace-no-wrap bg-red-400 p-2">Delete</button>
                                     </td>
                                 </tr>
                                 )

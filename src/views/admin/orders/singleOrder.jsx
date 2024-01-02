@@ -2,6 +2,7 @@ import { APIAuthenticated } from 'http'
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import { updatePaymentStatus } from 'store/orderSlice'
 import { updateOrderStatus } from 'store/orderSlice'
 
 
@@ -10,16 +11,23 @@ const SingleOrder = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const {orders} = useSelector((state)=>state.orders)
-    console.log(orders)
+
     const [filteredOrder] = orders?.filter((order)=>order._id === id)
     console.log(filteredOrder,"FO")
 
     const [orderStatus,setOrderStatus] = useState(filteredOrder?.orderStatus)
+    const [paymentStatus,setPaymentStatus] = useState(filteredOrder?.paymentDetails.status)
     const handleOrderStatus = (e)=>{
         setOrderStatus(e.target.value)
-        console.log(e.target.value)
+
         dispatch(updateOrderStatus(id,e.target.value))
     }
+
+    const handlePaymentStatus = (e)=>{
+      setPaymentStatus(e.target.value)
+
+      dispatch(updatePaymentStatus(id,e.target.value))
+  }
     
     
 
@@ -126,15 +134,31 @@ const SingleOrder = () => {
               <div className="flex w-full justify-center items-center md:justify-start md:items-start">
      
           
-            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Order Status</label>
+         <div style={{display:'flex',flexDirection:'column',padding:'18px'}}>
+         <div>
+           <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Order Status</label>
             <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleOrderStatus}>
-            <option value={filteredOrder?.orderStatus}>{filteredOrder?.orderStatus}</option>
-           
+            {/* <option value={filteredOrder?.orderStatus}>{filteredOrder?.orderStatus}</option> */}
+            <option value="pending">pending</option>
             <option value="delivered">Delivered</option>
+           
             <option value="ontheway">Ontheway</option>
             <option value="preparation">Preparation</option>
             <option value="cancelled">Cancelled</option>
             </select>
+           </div>
+
+            <div>
+            <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Payment Status</label>
+            <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handlePaymentStatus}>
+            {/* <option value={filteredOrder?.paymentDetails.status}>{filteredOrder?.paymentDetails.status}</option> */}
+            <option value="pending">pending</option>
+            <option value="paid">paid</option>
+            <option value="unpaid">unpaid</option>
+
+            </select>
+            </div>
+         </div>
 
               </div>
               {
