@@ -131,7 +131,7 @@ const Myproducts = () => {
                                         </div>
                                     </td> */}
                                        <td className="px-5 py-5 bproduct-b bproduct-gray-200 bg-white text-sm">
-                                        <p onClick={()=>navigate(`/myproducts/${product._id}`)} className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{product._id}</p>
+                                        <p onClick={()=>navigate(`/admin/products/${product._id}`)} className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{product._id}</p>
                                     </td>
                                     <td className="px-5 py-5 bproduct-b bproduct-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{product.productName}</p>
@@ -147,7 +147,7 @@ const Myproducts = () => {
                                            {product.productPrice}
                                         </p>
                                     </td>
-                                    <td className="px-5 py-5 bproduct-b bproduct-gray-200 bg-white text-sm">
+                                    <td className="px-5 py-5 bproduct-b bproduct-gray-200 bg-white text-sm">≈
                                         <p className="text-gray-900 whitespace-no-wrap">{new Date(product.createdAt).toLocaleDateString()}</p>
                                     </td>
                                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
