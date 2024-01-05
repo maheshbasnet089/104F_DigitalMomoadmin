@@ -1,5 +1,5 @@
 import { APIAuthenticated } from 'http'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { updatePaymentStatus } from 'store/orderSlice'
@@ -10,9 +10,19 @@ const SingleOrder = () => {
     const {id} = useParams()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const {orders} = useSelector((state)=>state.orders)
-
-    const [filteredOrder] = orders?.filter((order)=>order._id === id)
+    let {orders} = useSelector((state)=>state.orders)
+    const [newOrder,setNewOrder] = useState([])
+    const fetchOrders = async()=>{
+      const response = await APIAuthenticated.get("admin/orders")
+      if(response.status === 200){
+       setNewOrder(response.data.data)
+      }
+    }
+console.log(orders)
+    useEffect(()=>{
+      fetchOrders()
+    },[])
+    const [filteredOrder] = orders ? orders.filter((order)=>order._id === id) :  newOrder.filter((order)=>order._id === id)
     console.log(filteredOrder,"FO")
 
     const [orderStatus,setOrderStatus] = useState(filteredOrder?.orderStatus)

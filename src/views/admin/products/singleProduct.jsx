@@ -1,5 +1,5 @@
 import { APIAuthenticated } from 'http'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { updateTsqPp } from 'store/productsSlice'
@@ -13,9 +13,10 @@ const Singleproduct = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const {products} = useSelector((state)=>state.products)
-    console.log(products)
+    const [orders,setOrders] = useState([])
+
     const [filteredproduct] = products?.filter((product)=>product._id === id)
-    console.log(filteredproduct,"FO")
+    
 
     const [productStatus,setproductStatus] = useState(filteredproduct?.productStatus)
     // const [paymentStatus,setPaymentStatus] = useState(filteredproduct?.paymentDetails.status)
@@ -53,6 +54,17 @@ const Singleproduct = () => {
           console.log(error)      
         }
       }
+      const fetchProductOrders = async()=>{
+        const response = await APIAuthenticated.get(`/products/productOrders/${id}`)
+        if(response.status === 200){
+          setOrders(response.data.data)
+        }
+      }
+
+      useEffect(()=>{
+        fetchProductOrders()
+      },[])
+      console.log(orders)
   return (
     <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
     
@@ -84,8 +96,34 @@ const Singleproduct = () => {
       
 
           </div>
+
+    <div   className="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+            <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">Orders</p>
+            {orders.length > 0 && orders.map((order)=>{
+  return (
+                <div key={order._id} className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
+  
+                <div className="bproduct-b bproduct-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
+                  <div className="w-full flex flex-col justify-start items-start space-y-8">
+                    <h3 className=" dark:text-white  ">{order?._id}</h3>
+                  </div>
+                  <div className="flex justify-between space-x-8 items-start w-full">
+                    <p className="text-base dark:text-white xl:text-lg leading-6"> {order?.orderStatus} </p>
+                    <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">{order?.shippingAddress}</p>
+                    <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">{order?.phoneNumber}</p>
+                  </div>
+                </div>
+              </div>
+      
+
+      )
+    })}
+          </div>
+
     
         </div>
+
+    
         <div className="bg-gray-50 dark:bg-gray-800 w-full xl:w-96 flex justify-between items-center md:items-start px-4 py-2 md:p-1 xl:p-8 flex-col" style={{height:'200px'}}>
           <h3 className="text-xl dark:text-white font-semibold leading-5 text-gray-800">Update</h3>
           <div className="flex flex-col md:flex-row xl:flex-col justify-start items-stretch h-full w-full md:space-x-6 lg:space-x-8 xl:space-x-0">
