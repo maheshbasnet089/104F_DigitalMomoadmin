@@ -15,8 +15,29 @@ import DailyTraffic from "views/admin/default/components/DailyTraffic";
 import TaskCard from "views/admin/default/components/TaskCard";
 import tableDataCheck from "./variables/tableDataCheck.json";
 import tableDataComplex from "./variables/tableDataComplex.json";
+import { useEffect, useState } from "react";
+import api from "http/ApiService";
 
 const Dashboard = () => {
+  const [datas,setDatas] = useState({})
+  
+
+  useEffect(()=>{
+    (
+      async ()=>{
+        const result = await api.getDatas('admin/misc/datas')
+        console.log(result)
+        setDatas(result)
+      }
+    )()
+  },[])
+  const totalOrderedUsers = datas && datas.allOrders?.map((order)=>{
+    return {
+      userId : order.user._id 
+    }
+   })
+   const uniqueTotalOrderedUsers = [...new Set(totalOrderedUsers?.map(user=>user.userId))]
+   console.log(uniqueTotalOrderedUsers)
   return (
     <div>
       {/* Card widget */}
@@ -24,34 +45,21 @@ const Dashboard = () => {
       <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"Earnings"}
-          subtitle={"$340.5"}
+          title={"Orders"}
+          subtitle={datas.orders}
         />
-        <Widget
-          icon={<IoDocuments className="h-6 w-6" />}
-          title={"Spend this month"}
-          subtitle={"$642.39"}
-        />
-        <Widget
+            <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"Sales"}
-          subtitle={"$574.34"}
+          title={"Users"}
+          subtitle={datas.users}
         />
-        <Widget
-          icon={<MdDashboard className="h-6 w-6" />}
-          title={"Your Balance"}
-          subtitle={"$1,000"}
-        />
-        <Widget
+            <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"New Tasks"}
-          subtitle={"145"}
+          title={"Products"}
+          subtitle={datas.products}
         />
-        <Widget
-          icon={<IoMdHome className="h-6 w-6" />}
-          title={"Total Projects"}
-          subtitle={"$2433"}
-        />
+ 
+  
       </div>
 
       {/* Charts */}
@@ -79,21 +87,7 @@ const Dashboard = () => {
           <PieChartCard />
         </div>
 
-        {/* Complex Table , Task & Calendar */}
-
-        <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
-        />
-
-        {/* Task chart & Calendar */}
-
-        <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-2">
-          <TaskCard />
-          <div className="grid grid-cols-1 rounded-[20px]">
-            <MiniCalendar />
-          </div>
-        </div>
+   
       </div>
     </div>
   );
