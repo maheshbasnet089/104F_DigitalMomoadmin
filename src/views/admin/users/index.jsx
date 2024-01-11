@@ -113,7 +113,7 @@ const Myusers = () => {
                                         </div>
                                     </td> */}
                                        <td className="px-5 py-5 buser-b buser-gray-200 bg-white text-sm">
-                                        <p onClick={()=>navigate(`/myusers/${user._id}`)} className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{user._id}</p>
+                                        <p className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{user._id}</p>
                                     </td>
                                     <td className="px-5 py-5 buser-b buser-gray-200 bg-white text-sm">
                                         <p className="text-gray-900 whitespace-no-wrap">{user.userEmail}</p>

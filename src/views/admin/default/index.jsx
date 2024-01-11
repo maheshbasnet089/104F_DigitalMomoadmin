@@ -26,7 +26,7 @@ const Dashboard = () => {
     (
       async ()=>{
         const result = await api.getDatas('admin/misc/datas')
-        console.log(result)
+      
         setDatas(result)
       }
     )()
@@ -37,7 +37,6 @@ const Dashboard = () => {
     }
    })
    const uniqueTotalOrderedUsers = [...new Set(totalOrderedUsers?.map(user=>user.userId))]
-   console.log(uniqueTotalOrderedUsers)
   return (
     <div>
       {/* Card widget */}
@@ -64,31 +63,7 @@ const Dashboard = () => {
 
       {/* Charts */}
 
-      <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <TotalSpent />
-        <WeeklyRevenue />
-      </div>
-
-      {/* Tables & Charts */}
-
-      <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-2">
-        {/* Check Table */}
-        <div>
-          <CheckTable
-            columnsData={columnsDataCheck}
-            tableData={tableDataCheck}
-          />
-        </div>
-
-        {/* Traffic chart & Pie Chart */}
-
-        <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-2">
-          <DailyTraffic />
-          <PieChartCard />
-        </div>
-
-   
-      </div>
+  
     </div>
   );
 };
